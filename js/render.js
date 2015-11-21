@@ -1,4 +1,5 @@
-var c = document.getElementById("myCanvas");
+var canvasId = 'sugarScape';
+var c = document.getElementById(canvasId);
 var ctx = c.getContext("2d");
 var unit = 8;
 var lineWidth = 1;
@@ -65,8 +66,8 @@ function drawSugarColor(src, max)
         var cx = j*unit+halfUnit, cy = i*unit+halfUnit;
         ctx.clearRect(j*unit, i*unit, unit, unit);
         var blue = 255-Math.floor(Math.min(max, src[idx])/max*255);
-        //var color = 'rgb(255,255,'+blue+')';
-        var color = 'rgb('+blue+',255,255)';
+        var color = 'rgb(255,255,'+blue+')';
+        //var color = 'rgb('+blue+',255,255)';
         drawCircle(cx, cy, fullRadius, color);
     }
 }
