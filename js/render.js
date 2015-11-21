@@ -1,10 +1,11 @@
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
-var unit = 10;
+var unit = 8;
 var lineWidth = 1;
 var halfLineWidth = lineWidth/2;
 var halfUnit = unit/2;
-var sugarColor = 'red';
+var fullRadius = halfUnit-lineWidth;
+var sugarColor = 'yellow';
 var agentColor = 'blue';
 
 function setCanvas()
@@ -38,20 +39,50 @@ function drawCircle(centerX, centerY, radius, color)
     ctx.fill();
 }
 
-function drawSugar(src, max)
+/*
+draw the sugar,
+using radius to indicate abundance of the sugar
+*/
+function drawSugarRadius(src, max)
 {
     for (var idx=0; idx<cntX*cntY; idx++) {
         var i = Math.floor(idx / cntX), j = idx % cntX;
-        var posX = j*unit+halfUnit, posY = i*unit+halfUnit;
-        var radius = (halfUnit-lineWidth)*src[idx]/max;
+        var cx = j*unit+halfUnit, cy = i*unit+halfUnit;
+        var radius = fullRadius*Math.min(max, src[idx])/max;
         ctx.clearRect(j*unit, i*unit, unit, unit);
-        drawCircle(posX, posY, radius, sugarColor);
+        drawCircle(cx, cy, radius, sugarColor);
     }
+}
+
+/*
+draw the sugar,
+using color to indicate abundance of the sugar
+*/
+function drawSugarColor(src, max)
+{
+    for (var idx=0; idx<cntX*cntY; idx++) {
+        var i = Math.floor(idx / cntX), j = idx % cntX;
+        var cx = j*unit+halfUnit, cy = i*unit+halfUnit;
+        ctx.clearRect(j*unit, i*unit, unit, unit);
+        var blue = 255-Math.floor(Math.min(max, src[idx])/max*255);
+        //var color = 'rgb(255,255,'+blue+')';
+        var color = 'rgb('+blue+',255,255)';
+        drawCircle(cx, cy, fullRadius, color);
+    }
+}
+
+function drawSugar(src, max)
+{
+    drawSugarColor(src, max);
 }
 
 function drawAgents()
 {
+    //alert('drawAgents');
     for (var i=0; i<agents.length; i++) {
-        var posX = agents[i].posX, pos
+        var x = agents[i].x, y = agents[i].y;
+        var cx = x*unit+halfUnit, cy = y*unit+halfUnit;
+        ctx.clearRect(x*unit, y*unit, unit, unit);
+        drawCircle(cx, cy, fullRadius, agentColor);
     }
 }
