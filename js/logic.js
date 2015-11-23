@@ -6,15 +6,15 @@ var sugarProduction =   Array(cntX*cntY);
 var sugarCapacity   =   Array(cntX*cntY);
 var hasAgent        =   Array(cntX*cntY);
 var agentCnt        =   250;
-var maxSugar        =   40;
+var maxSugar        =   30;
 var maxProduction   =   1;
 var agents          =   Array(agentCnt);
-var fps             =   5;
+var fps             =   3;
 
 //--------------------------agent constant------------------------
 var visionRange     =   6;
 var harvestRange    =   10;
-var consumeRange    =   10;
+var consumeRange    =   8;
 var capacityRange   =   30;
 var initSugarRange  =   15;
 
