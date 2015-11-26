@@ -12,7 +12,6 @@ function Agent(x, y, vision, harvest, consume, capacity, sugar)
     this.consume    = consume;
     this.capacity   = capacity;
     this.sugar      = Math.min(sugar, capacity);
-    if (this.sugar > 0) alert('error');
 }
 
 Agent.prototype.getPos = function()
