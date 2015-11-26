@@ -7,9 +7,9 @@ var sugarCapacity   =   Array(cntX*cntY);
 var hasAgent        =   Array(cntX*cntY);
 var agentCnt        =   250;
 var maxSugar        =   30;
-var maxProduction   =   1;
+var maxProduction   =   0.1;
 var agents          =   Array(agentCnt);
-var fps             =   3;
+var fps             =   5;
 
 //--------------------------agent constant------------------------
 var visionRange     =   6;
@@ -20,15 +20,15 @@ var initSugarRange  =   15;
 
 //--------------------------sugar mine----------------------------
 var sugarMineA = {
-    x:          cntX/4,
-    y:          cntY/4,
+    x:          Math.floor(cntX/4),
+    y:          Math.floor(cntY/4),
     initSugar:  maxSugar,
     production: maxProduction, 
     fallOff:    20};
 
 var sugarMineB = {
-    x:          cntX*3/4,
-    y:          cntY*3/4,
+    x:          Math.floor(cntX*3/4),
+    y:          Math.floor(cntY*3/4),
     initSugar:  maxSugar,
     production: maxProduction,
     fallOff:    20};
@@ -59,6 +59,7 @@ function test_init_sugar_sugarMine()
         }
     }
 }
+
 function test_init_sugar()
 {
     test_init_sugar_sugarMine();         
@@ -77,14 +78,24 @@ function test_init_agent()
         var pos = pos_arr[i];
         var x = pos%cntX, y = Math.floor(pos/cntX);
         
-        var vision      = Math.floor(Math.random()*(visionRange-1))+1; //at least 1
-        var harvest     = Math.floor(Math.random()*harvestRange);
-        var consume     = Math.floor(Math.random()*(consumeRange-1))+1; //at least 1
-        var capacity    = Math.floor(Math.random()*capacityRange);
-        var initSugar   = Math.floor(Math.random()*initSugarRange);
+        var vision      = random_int(1, visionRange+1);
+        var harvest     = random_int(2, harvestRange+1);
+        var consume     = random_int(1, consumeRange+1); //at least 1
+        var capacity    = random_int(1, capacityRange+1);
+        var initSugar   = random_int(1, capacity+1);
 
+/*
+        x = Math.floor(sugarMineA.x);
+        y = Math.floor(sugarMineA.y);
+        pos = x + y *cntX;
+        consume = 1;
+        harvest = 10;
+        vision = 6;
+        */
+        //console.log('vision: '+vision);
         agents[i] = 
-            new Agent(x, y, 
+            new Agent(
+                x, y, 
                 vision,
                 harvest,
                 consume,
@@ -96,22 +107,39 @@ function test_init_agent()
 
 function process_one_frame()
 {
+    //console.log(agentCnt);
     process_one_frame_agent();
     draw();
     product_sugar();
     setTimeout(process_one_frame, 1000/fps);
 }
 
+function agent_die(i)
+{
+    hasAgent[agents[i].getPos()] = false;
+    agents[i] = agents[agents.length-1];
+    agents.pop();
+    agentCnt--;
+}
+
+function agent_reproduct(i)
+{
+    var agent = agents[i].reproduce();
+    if (agent) {
+        hasAgent[agent.getPos()] = true;
+        agents.push(agent);
+        agentCnt++;
+    }    
+}
+
 function process_one_frame_agent()
 {
-    for (var i=0; i<agents.length; i++) {
-        if (!agents[i].Consume()) {
-            agents[i] = agents[agents.length-1];
-            i--;
-            agents.pop();
-            agentCnt--;
+    for (var i=0; i<agentCnt; i++) {
+        if (!agents[i].Consume() || agents[i].getDie()) {
+            agent_die(i--);
         }
         else {
+            agent_reproduct(i);
             agents[i].Harvest();
             agents[i].Migrate();
         }

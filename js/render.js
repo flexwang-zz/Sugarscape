@@ -75,7 +75,11 @@ function drawSugarColor(src, max)
 function drawSugar()
 {
     //drawSugarColor(sugarProduction, maxProduction);
-    drawSugarColor(sugar, maxSugar);
+    //drawSugarColor(sugar, maxSugar);
+    var max = sugar[0];
+    for (var i=1; i<sugar.length; i++)
+        max = Math.max(max, sugar[i]);
+    drawSugarColor(sugar, Math.max(max));
 }
 
 function drawAgents()
@@ -85,7 +89,7 @@ function drawAgents()
         var x = agents[i].x, y = agents[i].y;
         var cx = x*unit+halfUnit, cy = y*unit+halfUnit;
         ctx.clearRect(x*unit, y*unit, unit, unit);
-        drawCircle(cx, cy, fullRadius, agentColor);
+        drawCircle(cx, cy, fullRadius, agents[i].getColor());
     }
 }
 
